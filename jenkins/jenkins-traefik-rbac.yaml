@@ -1,0 +1,32 @@
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: humming-traefik-deployer
+  namespace: jenkins
+rules:
+  - apiGroups:
+      - traefik.io
+    resources:
+      - ingressroutes
+      - middlewares
+    verbs:
+      - get
+      - list
+      - watch
+      - create
+      - update
+      - patch
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: humming-traefik-deployer-binding
+  namespace: jenkins
+subjects:
+  - kind: User
+    name: "serviceAccount:project-3ae33600-7198-48d4-a61.svc.id.goog[jenkins/jenkins-gcp-agent]"
+    apiGroup: rbac.authorization.k8s.io
+roleRef:
+  kind: Role
+  name: humming-traefik-deployer
+  apiGroup: rbac.authorization.k8s.io
