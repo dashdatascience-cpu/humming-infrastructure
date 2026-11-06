@@ -1,9 +1,6 @@
 pipeline {
     agent {
-        kubernetes {
-            inheritFrom 'humming-node24'
-            defaultContainer 'gcloud'
-        }
+        label 'humming-node24'
     }
 
     options {
