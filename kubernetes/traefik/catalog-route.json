@@ -1,0 +1,31 @@
+{
+  "apiVersion": "traefik.io/v1alpha1",
+  "kind": "IngressRoute",
+  "metadata": {
+    "name": "humming-catalog-route",
+    "namespace": "jenkins"
+  },
+  "spec": {
+    "entryPoints": [
+      "web"
+    ],
+    "routes": [
+      {
+        "kind": "Rule",
+        "match": "PathPrefix(`/catalog_service/`) || Path(`/catalog_service`)",
+        "middlewares": [
+          {
+            "name": "catalog-service-strip"
+          }
+        ],
+        "services": [
+          {
+            "name": "humming-catalog-service",
+            "namespace": "humming-dev",
+            "port": 80
+          }
+        ]
+      }
+    ]
+  }
+}

@@ -1,0 +1,6 @@
+providers:
+  kubernetesCRD:
+    allowCrossNamespace: true
+service:
+  spec:
+    type: ClusterIP

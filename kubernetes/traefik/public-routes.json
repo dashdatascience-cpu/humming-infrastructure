@@ -1,0 +1,41 @@
+{
+  "apiVersion": "traefik.io/v1alpha1",
+  "kind": "IngressRoute",
+  "metadata": {
+    "name": "humming-public-routes",
+    "namespace": "jenkins"
+  },
+  "spec": {
+    "entryPoints": [
+      "web"
+    ],
+    "routes": [
+      {
+        "kind": "Rule",
+        "match": "PathPrefix(`/jenkins`)",
+        "services": [
+          {
+            "name": "jenkins",
+            "port": 8080
+          }
+        ]
+      },
+      {
+        "kind": "Rule",
+        "match": "PathPrefix(`/auth_service`)",
+        "middlewares": [
+          {
+            "name": "auth-strip-prefix"
+          }
+        ],
+        "services": [
+          {
+            "name": "humming-auth-service",
+            "namespace": "humming-dev",
+            "port": 80
+          }
+        ]
+      }
+    ]
+  }
+}

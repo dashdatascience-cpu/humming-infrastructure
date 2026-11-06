@@ -1,0 +1,25 @@
+# macOS
+.DS_Store
+
+# Secrets and credentials
+.env
+.env.*
+*.key
+*.pem
+*.p12
+*.pfx
+*credentials*.json
+*secret*.yaml
+*secret*.yml
+*secret*.json
+
+# Terraform local state
+.terraform/
+*.tfstate
+*.tfstate.*
+crash.log
+
+# Editor files
+.idea/
+.vscode/
+*.swp
