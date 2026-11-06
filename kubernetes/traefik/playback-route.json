@@ -1,0 +1,29 @@
+{
+  "apiVersion": "traefik.io/v1alpha1",
+  "kind": "IngressRoute",
+  "metadata": {
+    "name": "humming-playback-route",
+    "namespace": "jenkins"
+  },
+  "spec": {
+    "entryPoints": ["web"],
+    "routes": [
+      {
+        "kind": "Rule",
+        "match": "PathPrefix(`/playback_service/`) || Path(`/playback_service`)",
+        "middlewares": [
+          {
+            "name": "playback-service-strip"
+          }
+        ],
+        "services": [
+          {
+            "name": "humming-playback-service",
+            "namespace": "humming-dev",
+            "port": 80
+          }
+        ]
+      }
+    ]
+  }
+}

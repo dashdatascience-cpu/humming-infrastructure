@@ -1,0 +1,29 @@
+{
+  "apiVersion": "traefik.io/v1alpha1",
+  "kind": "IngressRoute",
+  "metadata": {
+    "name": "humming-library-route",
+    "namespace": "jenkins"
+  },
+  "spec": {
+    "entryPoints": ["web"],
+    "routes": [
+      {
+        "kind": "Rule",
+        "match": "PathPrefix(`/library_service/`) || Path(`/library_service`)",
+        "middlewares": [
+          {
+            "name": "library-service-strip"
+          }
+        ],
+        "services": [
+          {
+            "name": "humming-library-service",
+            "namespace": "humming-dev",
+            "port": 80
+          }
+        ]
+      }
+    ]
+  }
+}

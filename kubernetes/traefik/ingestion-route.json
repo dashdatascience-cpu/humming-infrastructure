@@ -1,0 +1,29 @@
+{
+  "apiVersion": "traefik.io/v1alpha1",
+  "kind": "IngressRoute",
+  "metadata": {
+    "name": "humming-ingestion-route",
+    "namespace": "jenkins"
+  },
+  "spec": {
+    "entryPoints": ["web"],
+    "routes": [
+      {
+        "kind": "Rule",
+        "match": "PathPrefix(`/ingestion_service/`) || Path(`/ingestion_service`)",
+        "middlewares": [
+          {
+            "name": "ingestion-service-strip"
+          }
+        ],
+        "services": [
+          {
+            "name": "humming-ingestion-service",
+            "namespace": "humming-dev",
+            "port": 80
+          }
+        ]
+      }
+    ]
+  }
+}
