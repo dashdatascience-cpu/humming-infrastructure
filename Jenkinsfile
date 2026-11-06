@@ -15,6 +15,33 @@ pipeline {
             }
         }
 
+        stage('Prepare GKE Tools') {
+            steps {
+                container('gcloud') {
+                    sh '''
+                        set -eu
+
+                        export DEBIAN_FRONTEND=noninteractive
+
+                        echo "Installing Kubernetes tools..."
+                        apt-get update
+                        apt-get install -y \
+                          kubectl \
+                          google-cloud-cli-gke-gcloud-auth-plugin
+
+                        echo "Connecting to Humming GKE cluster..."
+                        gcloud container clusters get-credentials \
+                          humming-cluster \
+                          --region=asia-south1 \
+                          --project=project-3ae33600-7198-48d4-a61
+
+                        echo "Verifying Kubernetes connection..."
+                        kubectl config current-context
+                    '''
+                }
+            }
+        }
+
         stage('Validate Configuration') {
             steps {
                 container('gcloud') {
