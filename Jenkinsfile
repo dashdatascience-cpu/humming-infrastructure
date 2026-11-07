@@ -27,7 +27,8 @@ pipeline {
                         apt-get update
                         apt-get install -y \
                           kubectl \
-                          google-cloud-cli-gke-gcloud-auth-plugin
+                          google-cloud-cli-gke-gcloud-auth-plugin \
+                          jq
 
                         echo "Connecting to Humming GKE cluster..."
                         gcloud container clusters get-credentials \
