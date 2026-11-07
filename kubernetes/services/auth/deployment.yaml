@@ -1,0 +1,92 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: humming-auth-service
+  namespace: humming-dev
+  labels:
+    app: humming-auth-service
+
+spec:
+  replicas: 1
+  progressDeadlineSeconds: 600
+
+  selector:
+    matchLabels:
+      app: humming-auth-service
+
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 0
+
+  template:
+    metadata:
+      labels:
+        app: humming-auth-service
+
+    spec:
+      serviceAccountName: humming-auth-sa
+      terminationGracePeriodSeconds: 30
+
+      containers:
+        - name: app
+          image: REPLACE_WITH_ARTIFACT_REGISTRY_IMAGE
+          imagePullPolicy: IfNotPresent
+
+          ports:
+            - name: http
+              containerPort: 3000
+
+          envFrom:
+            - configMapRef:
+                name: humming-auth-service-config
+
+          env:
+            - name: DATABASE_URL
+              valueFrom:
+                secretKeyRef:
+                  name: humming-auth-db
+                  key: DATABASE_URL
+
+          readinessProbe:
+            httpGet:
+              path: /health/ready
+              port: http
+            periodSeconds: 10
+            timeoutSeconds: 1
+            failureThreshold: 3
+
+          livenessProbe:
+            httpGet:
+              path: /health/live
+              port: http
+            periodSeconds: 10
+            timeoutSeconds: 1
+            failureThreshold: 3
+
+          resources:
+            requests:
+              cpu: 100m
+              memory: 128Mi
+            limits:
+              cpu: 500m
+              memory: 512Mi
+
+        - name: cloud-sql-proxy
+          image: gcr.io/cloud-sql-connectors/cloud-sql-proxy:2
+          args:
+            - "--structured-logs"
+            - "--port=5432"
+            - "project-3ae33600-7198-48d4-a61:asia-south1:humming-postgres"
+
+          securityContext:
+            runAsNonRoot: true
+
+          resources:
+            requests:
+              cpu: 100m
+              memory: 128Mi
+            limits:
+              cpu: 500m
+              memory: 256Mi
