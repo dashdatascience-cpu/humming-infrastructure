@@ -46,6 +46,12 @@ pipeline {
             steps {
                 container('gcloud') {
                     sh '''
+                        echo "Checking JSON validators..."
+                        command -v python3 || true
+                        command -v jq || true
+                        command -v node || true
+                    '''
+                    sh '''
                         set -eu
 
                         echo "Validating Traefik JSON manifests..."
@@ -58,7 +64,7 @@ pipeline {
                             [ -f "$file" ] || continue
 
                             echo "Checking $file"
-                            python3 -m json.tool "$file" > /dev/null
+                            jq empty "$file"
                         done
 
                         echo "Validation completed."
