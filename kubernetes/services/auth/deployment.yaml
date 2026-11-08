@@ -41,6 +41,8 @@ spec:
           envFrom:
             - configMapRef:
                 name: humming-auth-service-config
+            - secretRef:
+                name: humming-auth-runtime-secrets
 
           env:
             - name: DATABASE_URL
